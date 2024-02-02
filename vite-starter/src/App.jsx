@@ -1,23 +1,31 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import App from "./App";
+import "./App.css";
+import { useState } from "react";
 
-test("button click flow", () => {
-  render(<App />);
+function App() {
+  const [disabled, setDisabled] = useState(false);
+  const [buttonColor, setButtonColor] = useState("red");
+  const newButtonColor = buttonColor === "red" ? "blue" : "red";
+  const className = disabled ? "gray" : buttonColor;
 
-  // find an element with a role of button and text matching /blue/i
-  const buttonElement = screen.getByRole("button", {
-    name: /blue/i,
-  });
+  return (
+    <div>
+      <button
+        className={className}
+        disabled={disabled}
+        onClick={() => setButtonColor(newButtonColor)}
+      >
+        Change to {newButtonColor}
+      </button>
+      <br />
+      <input
+        type="checkbox"
+        id="disable-button-checkbox"
+        defaultChecked={disabled}
+        onChange={(e) => setDisabled(e.target.checked)}
+      />
+      <label htmlFor="disable-button-checkbox">Disable button</label>
+    </div>
+  );
+}
 
-  // expect the class to be red
-  expect(buttonElement).toHaveClass("red");
-
-  // click button
-  fireEvent.click(buttonElement);
-
-  // expect the class to be blue
-  expect(buttonElement).toHaveClass("blue");
-
-  // expect the button text to match /red/i
-  expect(buttonElement).toHaveTextContent(/red/i);
-});
+export default App;
