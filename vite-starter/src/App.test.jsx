@@ -1,5 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import App from "./App";
+import { kebabCaseToTitleCase } from "./helper";
 
 test("button click flow", () => {
   render(<App />);
@@ -10,13 +11,13 @@ test("button click flow", () => {
   });
 
   // expect the class to be red
-  expect(buttonElement).toHaveClass("red");
+  expect(buttonElement).toHaveClass("medium-violet-red");
 
   // click button
   fireEvent.click(buttonElement);
 
   // expect the class to be blue
-  expect(buttonElement).toHaveClass("blue");
+  expect(buttonElement).toHaveClass("midnight-blue");
 
   // expect the button text to match /red/i
   expect(buttonElement).toHaveTextContent(/red/i);
@@ -46,5 +47,43 @@ test("checkbox flow", () => {
   // click checkbox to re-enable button
   fireEvent.click(checkboxElement);
   expect(buttonElement).toBeEnabled();
-  expect(buttonElement).toHaveClass("red");
+  expect(buttonElement).toHaveClass("medium-violet-red");
+});
+
+test("checkbox flow after button click", () => {
+  // render app
+  render(<App />);
+
+  // find elements
+  const buttonElement = screen.getByRole("button", {
+    name: /blue/i,
+  });
+  const checkboxElement = screen.getByRole("checkbox", {
+    name: /disable button/i,
+  });
+
+  // click button to change to blue
+  fireEvent.click(buttonElement);
+
+  // click checkbox to disable button
+  fireEvent.click(checkboxElement);
+  expect(buttonElement).toBeDisabled();
+  expect(buttonElement).toHaveClass("gray");
+
+  // click checkbox to re-enable button
+  fireEvent.click(checkboxElement);
+  expect(buttonElement).toBeEnabled();
+  expect(buttonElement).toHaveClass("midnight-blue");
+});
+
+describe("kebabCaseToTitleCase", () => {
+  test("Works for no hypens", () => {
+    expect(kebabCaseToTitleCase("red")).toBe("Red");
+  });
+  test("Works for one hyphen", () => {
+    expect(kebabCaseToTitleCase("midnight-blue")).toBe("Midnight Blue");
+  });
+  test("Works for multiple inner hyphens", () => {
+    expect(kebabCaseToTitleCase("medium-violet-red")).toBe("Medium Violet Red");
+  });
 });
