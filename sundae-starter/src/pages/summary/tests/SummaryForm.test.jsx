@@ -4,28 +4,23 @@ import userEvent from "@testing-library/user-event";
 
 test("Initial conditions", () => {
   render(<SummaryForm />);
-
   const checkbox = screen.getByRole("checkbox", {
     name: /terms and conditions/i,
   });
-  const confirmButton = screen.getByRole("button", { name: /confirm order/i });
-
   expect(checkbox).not.toBeChecked();
 
+  const confirmButton = screen.getByRole("button", { name: /confirm order/i });
   expect(confirmButton).toBeDisabled();
 });
 
-test("Checkbox disables button on first click and enables on second click", async () => {
+test("Checkbox enables button on first click and disables on second click", async () => {
   const user = userEvent.setup();
 
   render(<SummaryForm />);
-
   const checkbox = screen.getByRole("checkbox", {
     name: /terms and conditions/i,
   });
   const confirmButton = screen.getByRole("button", { name: /confirm order/i });
-
-  expect(checkbox).not.toBeChecked();
 
   await user.click(checkbox);
   expect(confirmButton).toBeEnabled();
@@ -36,14 +31,12 @@ test("Checkbox disables button on first click and enables on second click", asyn
 
 test("popover responds to hover", async () => {
   const user = userEvent.setup();
-
   render(<SummaryForm />);
 
   // popover starts out hidden
   const nullPopover = screen.queryByText(
-    /no ice cream will actually be delivered/
+    /no ice cream will actually be delivered/i
   );
-
   expect(nullPopover).not.toBeInTheDocument();
 
   // popover appears on mouseover of checkbox label
