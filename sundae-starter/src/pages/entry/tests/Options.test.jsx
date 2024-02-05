@@ -6,8 +6,6 @@ test("displays image for each scoop option from server", async () => {
 
   // find images
   const scoopImages = await screen.findAllByRole("img", { name: /scoop$/i });
-  console.log(scoopImages);
-
   expect(scoopImages).toHaveLength(2);
 
   // confirm alt text of images

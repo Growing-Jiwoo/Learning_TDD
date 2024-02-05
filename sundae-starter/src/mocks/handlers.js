@@ -1,4 +1,4 @@
-import { HttpResponse, http } from "msw";
+import { http, HttpResponse } from "msw";
 
 export const handlers = [
   http.get("http://localhost:3030/scoops", async () => {
