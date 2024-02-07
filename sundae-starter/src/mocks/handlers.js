@@ -8,3 +8,13 @@ export const handlers = [
     ]);
   }),
 ];
+
+export const toppingHandlers = [
+  http.get("http://localhost:3030/toppings", async () => {
+    return HttpResponse.json([
+      { name: "Cherries", imagePath: "/images/cherries.png" },
+      { name: "M&Ms", imagePath: "/images/m-and-ms.png" },
+      { name: "Hot fudge", imagePath: "/images/hot-fudge.png" },
+    ]);
+  }),
+];
