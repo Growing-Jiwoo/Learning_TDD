@@ -1,4 +1,4 @@
-import { render, screen, logRoles } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import App from "../App";
 
@@ -11,7 +11,6 @@ test("order phases for happy path", async () => {
 
   // add ice cream coops and toppings ()
   // 스쿱과 토핑 추가
-
   const vanillaInput = await screen.findByRole("spinbutton", {
     name: "Vanilla",
   });
@@ -36,7 +35,6 @@ test("order phases for happy path", async () => {
 
   // check summary information based on order
   // 주문 내용을 기반으로 요약 정보가 올바른지 확인
-
   const checkSummary = screen.getByRole("heading", { name: /order summary/i });
   expect(checkSummary).toBeInTheDocument();
 
@@ -50,24 +48,23 @@ test("order phases for happy path", async () => {
   });
   expect(checkScoopsOrder).toBeInTheDocument();
 
+  expect(screen.getByText("1 Vanilla")).toBeInTheDocument();
+  expect(screen.getByText("Cherries")).toBeInTheDocument();
+
   // accept terms and conditions and click button to confirm order
   // 이용 약관을 수락하고 버튼을 클릭해 주문을 확인
-
   const termsCheckbox = screen.getByRole("checkbox", {
     name: /I agree to Terms and Conditions/i,
   });
-
   await user.click(termsCheckbox);
 
   const confirmOrderBtn = screen.getByRole("button", {
     name: /Confirm order/i,
   });
-
   await user.click(confirmOrderBtn);
 
   // confirm order number on confirmation page
   // 확인 페이지에서 주문 번호가 존재하는지 확인
-
   const thankYouHeader = await screen.findByText(/thank you/i);
   expect(thankYouHeader).toBeInTheDocument();
 
@@ -76,18 +73,11 @@ test("order phases for happy path", async () => {
 
   // click "new order" button on confirmation page ()
   // 확인 페이지에서 새 주문 버튼 클릭
-
   const newOrderBtn = screen.getByRole("button", { name: /Create new order/i });
   await user.click(newOrderBtn);
 
   // check thap scoop and toppings subtotals have been reset
   // 스쿱과 토핑 소계 재설정 됐는지 확인
-
-  await user.type(vanillaInput, "0");
-
-  await user.click(cherriesToppings);
-  expect(cherriesToppings).not.toBeChecked();
-
   const resetToppingsOrder = screen.getByText("Toppings total: $0.00");
   expect(resetToppingsOrder).toBeInTheDocument();
 
