@@ -20,7 +20,6 @@ test("order phases for happy path", async () => {
   const cherriesToppings = await screen.findByRole("checkbox", {
     name: "Cherries",
   });
-
   await user.click(cherriesToppings);
 
   expect(cherriesToppings).toBeChecked();
@@ -30,7 +29,6 @@ test("order phases for happy path", async () => {
   const orderSummaryButton = screen.getByRole("button", {
     name: /order sundae/i,
   });
-
   await user.click(orderSummaryButton);
 
   // check summary information based on order
@@ -84,3 +82,71 @@ test("order phases for happy path", async () => {
   const resetScoopsOrder = screen.getByText("Scoops total: $0.00");
   expect(resetScoopsOrder).toBeInTheDocument();
 });
+
+// 사용자가 아무 토핑도 선택하지 않으면 요약 페이지에 토핑을 표시하지 않는 것
+// -> 페이지에 요소 존재 여부 테스트
+
+test("사용자가 아무 토핑도 선택하지 않으면 요약 페이지에 토핑을 표시하지 않음", async () => {
+  const user = userEvent.setup();
+
+  // 앱 렌더링
+  render(<App />);
+
+  // 스쿱과 토핑 추가
+  const vanillaInput = await screen.findByRole("spinbutton", {
+    name: "Vanilla",
+  });
+  await user.clear(vanillaInput);
+  await user.type(vanillaInput, "1");
+
+  // 주문 입력 페이지에서 주문 버튼을 찾아 클릭
+  const orderSummaryButton = screen.getByRole("button", {
+    name: /order sundae/i,
+  });
+  await user.click(orderSummaryButton);
+
+  // 주문 내용을 기반으로 요약 정보가 올바른지 확인
+  const checkSummary = screen.getByRole("heading", { name: /order summary/i });
+  expect(checkSummary).toBeInTheDocument();
+
+  // 선택된 토핑 없는지 확인
+  const toppingHeader = screen.queryByRole("heading", { name: /toppings/i });
+  expect(toppingHeader).not.toBeInTheDocument();
+});
+
+test.only("사용자가 토핑을 선택했다가 다시 선택하지 않았을 때", async () => {
+  const user = userEvent.setup();
+
+  // 앱 렌더링
+  render(<App />);
+
+  // 스쿱과 토핑 추가
+  const vanillaInput = await screen.findByRole("spinbutton", {
+    name: "Vanilla",
+  });
+  await user.clear(vanillaInput);
+  await user.type(vanillaInput, "1");
+
+  // 주문 입력 페이지에서 주문 버튼을 찾아 클릭
+  const orderSummaryButton = screen.getByRole("button", {
+    name: /order sundae/i,
+  });
+  await user.click(orderSummaryButton);
+
+  // 주문 내용을 기반으로 요약 정보가 올바른지 확인
+  const checkSummary = screen.getByRole("heading", { name: /order summary/i });
+  expect(checkSummary).toBeInTheDocument();
+
+  // 선택된 토핑 없는지 확인
+  const toppingHeader = screen.queryByRole("heading", { name: /toppings/i });
+  expect(toppingHeader).not.toBeInTheDocument();
+});
+
+// 스쿱 갯수 값의 유효성 검사, 사람들이 음수나 소수를 입력하지 못하게끔
+// -> jest의 toHaveClass 사용
+
+// 유효하지 않은 스쿱 개수가 있으면 합계액을 업데이트 하지 않도록
+// -> 스쿱 갯수 값 유효성 검사 이후, 최소한의 렌더링, userEvent keyboard 메소드 사용
+
+// 주문을 추출하고 서버로부터 오류 응답을 받았을 때 경고 표시
+// 오류 응답 핸들러로 교체하는 연습, Options에서 오류 응답 받았을 때 처럼
