@@ -141,9 +141,3 @@ test.only("사용자가 토핑을 선택했다가 다시 선택하지 않았을 
   const toppingHeader = screen.queryByRole("heading", { name: /toppings/i });
   expect(toppingHeader).not.toBeInTheDocument();
 });
-
-// 유효하지 않은 스쿱 개수가 있으면 합계액을 s업데이트 하지 않도록
-// -> 스쿱 갯수 값 유효성 검사 이후, 최소한의 렌더링, userEvent keyboard 메소드 사용
-
-// 주문을 추출하고 서버로부터 오류 응답을 받았을 때 경고 표시
-// 오류 응답 핸들러로 교체하는 연습, Options에서 오류 응답 받았을 때 처럼
